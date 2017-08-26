@@ -10,6 +10,9 @@
 
 	<context:annotation-config></context:annotation-config>
 	<context:component-scan base-package="dao"></context:component-scan>
+	
+	
+	
 	<jee:jndi-lookup jndi-name="jdbc/databaseResource" id="dataSource"
 		expected-type="javax.sql.DataSource">
 	</jee:jndi-lookup>

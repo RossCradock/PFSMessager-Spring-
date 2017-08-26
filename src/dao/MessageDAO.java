@@ -33,10 +33,10 @@ public class MessageDAO {
 			message.setSender(rs.getInt("sender"));
 			message.setRecipient(rs.getInt("recipient"));
 			message.setMessage(rs.getString("message"));
-			message.setHmac(rs.getString("hmac"));
 			message.setTime(rs.getLong("time"));
 			message.setSenderPublicKey(rs.getString("sender_public_key"));
 			message.setRecipientPublicKey(rs.getString("recipient_public_key"));
+			message.setToken(rs.getString("token"));
 			
 			return message;
 		}
@@ -54,8 +54,8 @@ public class MessageDAO {
 		return jdbc.queryForObject("SELECT * FROM message where id=:id", params, rowMapper);
 	}
 	
-	public List<Message> getAllMessages(){	
-		return jdbc.query("SELECT * FROM message", rowMapper);
+	public List<Message> getAllMessages(int userId){	
+		return jdbc.query("SELECT * FROM message where id=:userId", rowMapper);
 	}
 	
 	/*public boolean update(Message message){

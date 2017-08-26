@@ -7,18 +7,18 @@ public class Message {
 	private int recipient;
 	private String message;
 	private long time;
-	private String hmac;
 	private String senderPublicKey;
 	private String recipientPublicKey;
+	private String token;
 	
-	public Message(int sender, int recipient, String message, long time, String hmac, String senderPublicKey, String recipientPublicKey) {
+	public Message(int sender, int recipient, String message, long time, String senderPublicKey, String recipientPublicKey, String token) {
 		this.sender = sender;
 		this.recipient = recipient;
 		this.message = message;
 		this.time = time;
-		this.hmac = hmac;
 		this.senderPublicKey = senderPublicKey;
 		this.recipientPublicKey = recipientPublicKey;
+		this.token = token;
 	}
 	
 	public Message(){
@@ -65,14 +65,6 @@ public class Message {
 		this.time = time;
 	}
 	
-	public String getHmac() {
-		return hmac;
-	}
-	
-	public void setHmac(String hmac) {
-		this.hmac = hmac;
-	}
-	
 	public String getSenderPublicKey() {
 		return senderPublicKey;
 	}
@@ -88,4 +80,14 @@ public class Message {
 	public void setRecipientPublicKey(String recipientPublicKey) {
 		this.recipientPublicKey = recipientPublicKey;
 	}
+	
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
 }

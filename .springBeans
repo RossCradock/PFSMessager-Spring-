@@ -10,6 +10,7 @@
 		<config>WebContent/WEB-INF/account-servlet.xml</config>
 		<config>src/config/dao-context.xml</config>
 		<config>src/config/service-context.xml</config>
+		<config>src/config/beans.xml</config>
 	</configs>
 	<autoconfigs>
 	</autoconfigs>
