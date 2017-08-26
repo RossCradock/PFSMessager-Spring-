@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 
 import model.KeyHashCount;
 
-@Component("keyHashedCountDAO")
-public class KeyHashedCountDAO {
+@Component("keyHashCountDAO")
+public class KeyHashCountDAO {
 	
 private NamedParameterJdbcTemplate jdbc;
 	
@@ -31,14 +31,15 @@ private NamedParameterJdbcTemplate jdbc;
 			keyHashCount.setUserId2(rs.getInt("userId2"));
 			keyHashCount.setKeyCount(rs.getInt("keyCount"));
 			
-			
 			return keyHashCount;
 		}
 	};
 	
-	public int getKeyHashCount(int userId){
+	public int getKeyHashCount(int user1Id, int user2Id){
 		MapSqlParameterSource params = new MapSqlParameterSource();
-		params.addValue("id", userId);
-		return (jdbc.queryForObject("SELECT * FROM message where id=:id", params, rowMapper)).getKeyCount();
+		params.addValue("user1Id", user1Id);
+		params.addValue("user2Id", user2Id);
+		String sql = "SELECT * FROM key_hash_count where (user1id=:user1Id && user2id=:user2Id) or (user1id=:user2Id && user2id=:user1Id)";
+		return (jdbc.queryForObject(sql, params, rowMapper)).getKeyCount();
 	}
 }

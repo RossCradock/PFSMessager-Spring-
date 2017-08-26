@@ -27,24 +27,6 @@ import model.Message;
 public class MessageController {
 	
 	final private static String SERVER_KEY = "AAAArRI8oD4:APA91bHyFdh9MqYPCo-i-yghvdbxAVr6op657tZ9NmoMoDtWs3kg15DVqTMx8sogvUyDWU7bi4Z5cxPEcZ3K5_EC807V2C15kNb-imRgVb_lSuqQWUUPHrxL6Ht7lQSzYyE-AmI5mbh-";
-	/*private MessageService messageService;
-	
-	@Autowired
-	public void setMessageService(MessageService messageService){
-		this.messageService = messageService;
-	}
-	
-	/*@RequestMapping(value="/messages", method=RequestMethod.GET, produces="application/json")
-	@ResponseBody
-	public Map<String, Object> getMessages(@RequestParam(value="userId") int userId){
-		
-		List<Message> messages = null;
-		messages = messageService.getAllMessages(userId);
-		Map<String, Object> data = new HashMap<String, Object>();
-		data.put("messages", messages);
-		data.put("number", messages.size());
-		return data;
-	}*/
 	
 	@RequestMapping(value="/messages/sendMessage", method=RequestMethod.POST)
 	@ResponseBody
