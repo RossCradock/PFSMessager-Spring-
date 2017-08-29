@@ -26,9 +26,7 @@ public class AccountService {
 		return accountDAO.getAccount(id);		
 	}
 	
-	public void createAccount(String username, String password){
-		//TODO: encrypt this password
-		Account account = new Account(username, password);
-		accountDAO.create(account);
+	public void createAccount(String username){
+		accountDAO.create(username);
 	}
 }

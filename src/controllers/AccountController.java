@@ -4,11 +4,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import model.Account;
@@ -31,20 +33,19 @@ public class AccountController {
 		this.spareKeysService = spareKeysService;
 	}
 	
-	@RequestMapping(value="/account/checkUsername", method=RequestMethod.GET, produces="application/json")
+	@RequestMapping(value="/account/checkUsername", method=RequestMethod.POST, produces="application/json")
 	@ResponseBody
-	public Map<String, Object> checkUsername(@RequestParam(value="username") String username){
-		return generateJSON(username, false, null);
+	public Map<String, Object> checkUsername(@ModelAttribute("username") String username){
+		return generateJSON(username, false);
 	}
 	
 	@RequestMapping(value="/account/newUser", method=RequestMethod.POST, produces="application/json")
 	@ResponseBody
-	public Map<String, Object> newUser(@RequestParam(value="username") String username,
-			@RequestParam(value="password")String password){
-		return generateJSON(username, true, password);
+	public Map<String, Object> newUser(HttpServletRequest request){
+		return generateJSON(request.getParameter("username"), true);
 	}
 	
-	private Map<String, Object> generateJSON(String username, boolean newUser, String password){
+	private Map<String, Object> generateJSON(String username, boolean newUser){
 		Map<String, Object> data = new HashMap<String, Object>();
 		List<Account> accounts = accountService.getAllAccounts();
 		
@@ -56,7 +57,7 @@ public class AccountController {
 				
 				data.put("response", "username exists");
 				data.put("username", account.getUsername());
-				data.put("publicKey", spareKeysService.getSpareKey(account.getId()));
+				data.put("publicKey", spareKeysService.getSpareKey(username));
 				return data;
 			}
 			
@@ -69,25 +70,11 @@ public class AccountController {
 		
 		// if no user name was found create one for newUser or return "failed" for checkUsername
 		if(newUser){
-			accountService.createAccount(username, password);
+			accountService.createAccount(username);
 			data.put("response", "success");
 		}else{
 			data.put("response", "failed");
 		}
 		return data;
 	}
-	
-	/*@RequestMapping(value="/account/checkUsername/{userid}", method=RequestMethod.GET, produces="application/json")
-	@ResponseBody
-	public String checkUsername(@RequestBody String userid){
-		
-		List<Account> accounts = accountService.getAllAccounts();
-		for(Account account : accounts){
-			if(account.getUsername().equals(userid)){
-				return "username exists";
-			}
-		}
-		
-		return "failed";
-	}*/
 }

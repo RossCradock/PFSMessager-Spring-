@@ -18,8 +18,8 @@ public class SpareKeysService {
 		this.spareKeysDAO = spareKeysDAO;
 	}
 	
-	public String getSpareKey(int userId){
-		SpareKeys spareKeys = spareKeysDAO.getSpareKeys(userId);
+	public String getSpareKey(String username){
+		SpareKeys spareKeys = spareKeysDAO.getSpareKeys(username);
 		String[] keys = getKeysAsArray(spareKeys);
 		
 		// select a random key
@@ -33,8 +33,8 @@ public class SpareKeysService {
 		return keys[index];
 	}
 	
-	public void setSpareKey(int userId, String[] spareKeysArray){
-		SpareKeys spareKeys = spareKeysDAO.getSpareKeys(userId);
+	public void setSpareKey(String username, String[] spareKeysArray){
+		SpareKeys spareKeys = spareKeysDAO.getSpareKeys(username);
 		String[] keys = getKeysAsArray(spareKeys);
 		
 		// iterate through the sparekeys from the user
@@ -45,14 +45,13 @@ public class SpareKeysService {
 				if(keys[j].equals("0")){
 					SpareKeys updatedSpareKeys = setKeyNumberToKey(spareKeys, i, spareKeysArray[j]);
 					spareKeysDAO.update(updatedSpareKeys);
-					return;
 				}
 			}
 		}
 	}
 	
-	public int checkSpareKey(int userId){
-		SpareKeys spareKeys = spareKeysDAO.getSpareKeys(userId);
+	public int checkSpareKey(String username){
+		SpareKeys spareKeys = spareKeysDAO.getSpareKeys(username);
 		String[] keys = getKeysAsArray(spareKeys);
 		int numberOfEmptyKeys = 0;
 		

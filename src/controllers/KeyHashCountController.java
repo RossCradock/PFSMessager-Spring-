@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,12 +23,24 @@ public class KeyHashCountController {
 		this.keyHashCountService = keyHashCountService;
 	}
 	
-	@RequestMapping(value="/keyHashCount", method=RequestMethod.POST, produces="application/json")
+	@RequestMapping(value="/keyHashCount/getHashCount", method=RequestMethod.POST, produces="application/json")
 	@ResponseBody
-	public Map<String, Object> getKeyHashCount(@RequestParam(value="user1Id") int user1Id,
-			@RequestParam(value="user2Id") int user2Id){
+	public Map<String, Object> getKeyHashCount(@ModelAttribute("username1") String username1,
+			@RequestParam(value="username2") String username2){
 		
-		int hashCount = keyHashCountService.getKeyHashCount(user1Id, user2Id);
+		int hashCount = keyHashCountService.getKeyHashCount(username1, username2);
+		
+		Map<String, Object> data = new HashMap<String, Object>();
+		data.put("hashCount", hashCount);
+		return data;
+	}
+	
+	@RequestMapping(value="/keyHashCount/setHashCount", method=RequestMethod.POST, produces="application/json")
+	@ResponseBody
+	public Map<String, Object> setKeyHashCount(@ModelAttribute("username1") String username1,
+			@RequestParam(value="username2") String username2){
+		
+		int hashCount = keyHashCountService.setKeyHashCount(username1, username2);
 		
 		Map<String, Object> data = new HashMap<String, Object>();
 		data.put("hashCount", hashCount);

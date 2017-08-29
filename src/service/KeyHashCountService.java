@@ -15,7 +15,11 @@ public class KeyHashCountService {
 		this.keyHashCountDAO = keyHashCountDAO;
 	}
 	
-	public int getKeyHashCount(int user1Id, int user2Id){
-		return keyHashCountDAO.getKeyHashCount(user1Id, user2Id);
+	public int getKeyHashCount(String username1, String username2){
+		return keyHashCountDAO.getKeyHashCount(username1, username2);
+	}
+	
+	public int setKeyHashCount(String username1, String username2){
+		return keyHashCountDAO.setKeyHashCount(username1, username2);
 	}
 }

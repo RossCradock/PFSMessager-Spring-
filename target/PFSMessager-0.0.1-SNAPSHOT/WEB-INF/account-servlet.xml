@@ -11,9 +11,4 @@
 	</context:component-scan>
 	<mvc:annotation-driven></mvc:annotation-driven>
 
-	<bean id="jspViewResolver"
-		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="prefix" value="/WEB-INF/"></property>
-		<property name="suffix" value=".jsp"></property>
-	</bean>
 </beans>

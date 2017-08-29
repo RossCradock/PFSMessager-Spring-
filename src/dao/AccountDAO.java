@@ -2,7 +2,9 @@ package dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -32,15 +34,15 @@ public class AccountDAO {
 			
 			account.setId(rs.getInt("id"));
 			account.setUsername(rs.getString("username"));
-			account.setPassword(rs.getString("password"));
 			
 			return account;
 		}
 	};
 	
-	public boolean create(Account account){	
-		BeanPropertySqlParameterSource params = new BeanPropertySqlParameterSource(account);
-		return jdbc.update("insert into user(userame, password, spare_keys) values(:username, :password, :spareKeys)", params) == 1;
+	public boolean create(String username){	
+		Map<String, String> params = new HashMap<>();
+		params.put("username", username);
+		return jdbc.update("insert into user(username) values(:username)", params) == 1;
 	}
 	
 	public Account getAccount(int id){
