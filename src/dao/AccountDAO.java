@@ -34,15 +34,17 @@ public class AccountDAO {
 			
 			account.setId(rs.getInt("id"));
 			account.setUsername(rs.getString("username"));
+			account.setUsername(rs.getString("token"));
 			
 			return account;
 		}
 	};
 	
-	public boolean create(String username){	
+	public boolean create(String username, String token){	
 		Map<String, String> params = new HashMap<>();
 		params.put("username", username);
-		return jdbc.update("insert into user(username) values(:username)", params) == 1;
+		params.put("token", token);
+		return jdbc.update("insert into user(username, token) values(:username, :token)", params) == 1;
 	}
 	
 	public Account getAccount(int id){

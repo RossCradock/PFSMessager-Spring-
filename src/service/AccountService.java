@@ -26,7 +26,7 @@ public class AccountService {
 		return accountDAO.getAccount(id);		
 	}
 	
-	public void createAccount(String username){
-		accountDAO.create(username);
+	public void createAccount(String username, String token){
+		accountDAO.create(username, token);
 	}
 }

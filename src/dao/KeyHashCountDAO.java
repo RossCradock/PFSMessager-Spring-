@@ -2,6 +2,8 @@ package dao;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -30,9 +32,9 @@ private NamedParameterJdbcTemplate jdbc;
 		public KeyHashCount mapRow(ResultSet rs, int arg1) throws SQLException {
 			KeyHashCount keyHashCount = new KeyHashCount();
 			
-			keyHashCount.setUserId1(rs.getInt("userId1"));
-			keyHashCount.setUserId2(rs.getInt("userId2"));
-			keyHashCount.setKeyCount(rs.getInt("keyCount"));
+			keyHashCount.setUserId1(rs.getInt("user1id"));
+			keyHashCount.setUserId2(rs.getInt("user2id"));
+			keyHashCount.setKeyCount(rs.getInt("hash_number"));
 			
 			return keyHashCount;
 		}
@@ -83,6 +85,27 @@ private NamedParameterJdbcTemplate jdbc;
 		sql = "SELECT * FROM key_hash_count where (user1id=:user1Id && user2id=:user2Id) or (user1id=:user2Id && user2id=:user1Id)";
 		int hashCount = (jdbc.queryForObject(sql, params, rowMapper)).getKeyCount();
 		sql = "update key_hash_count set hash_number=" + (hashCount + 1) + SQL_WHERE_CLAUSE;
-		return (jdbc.queryForObject(sql, params, rowMapper)).getKeyCount();
+		jdbc.update(sql, params);
+		sql = "SELECT * FROM key_hash_count " + SQL_WHERE_CLAUSE;
+		return jdbc.queryForObject(sql, params, rowMapper).getKeyCount();
+	}
+	
+	public void createKeyHashCount(String username1, String username2){
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		
+		// get user IDs
+		params.addValue("username", username1);
+		String sql = "SELECT * FROM user where username=:username";
+		int user1Id = (jdbc.queryForObject(sql, params, rowMapperAccount)).getId();
+		params.addValue("username", username2);
+		int user2Id = (jdbc.queryForObject(sql, params, rowMapperAccount)).getId();
+		
+		
+		// get hash count for users
+		Map<String, String> insertParams = new HashMap<>();
+		insertParams.put("user1Id", String.valueOf(user1Id));
+		insertParams.put("user2Id", String.valueOf(user2Id));
+		sql = "insert into key_hash_count(user1id, user2id, hash_number) values(:user1Id, :user2Id, 0)";
+		jdbc.update(sql, insertParams);
 	}
 }

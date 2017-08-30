@@ -22,4 +22,8 @@ public class KeyHashCountService {
 	public int setKeyHashCount(String username1, String username2){
 		return keyHashCountDAO.setKeyHashCount(username1, username2);
 	}
+	
+	public void createKeyHashCount(String username1, String username2){
+		keyHashCountDAO.createKeyHashCount(username1, username2);
+	}
 }

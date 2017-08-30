@@ -4,9 +4,11 @@ public class Account {
 	
 	private int id;
 	private String username;
+	private String token;
 	
-	public Account(String username) {
+	public Account(String username, String token) {
 		this.username = username;
+		this.token = token;
 	}
 	
 	public Account(){
@@ -27,5 +29,13 @@ public class Account {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+	
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 }
