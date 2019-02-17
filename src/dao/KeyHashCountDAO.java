@@ -26,6 +26,7 @@ private NamedParameterJdbcTemplate jdbc;
 		this.jdbc = new NamedParameterJdbcTemplate(jdbc);
 	}
 	
+    // used instead of writing it out everytime
 	private static final String SQL_WHERE_CLAUSE = " where (user1id=:user1Id && user2id=:user2Id) or (user1id=:user2Id && user2id=:user1Id)";
 	
 	RowMapper<KeyHashCount> rowMapper = new RowMapper<KeyHashCount>(){
@@ -40,26 +41,8 @@ private NamedParameterJdbcTemplate jdbc;
 		}
 	};
 	
-	RowMapper<Account> rowMapperAccount = new RowMapper<Account>(){
-		public Account mapRow(ResultSet rs, int arg1) throws SQLException {
-			Account account = new Account();
-			
-			account.setId(rs.getInt("id"));
-			account.setUsername(rs.getString("username"));
-			
-			return account;
-		}
-	};
-	
-	public int getKeyHashCount(String username1, String username2){
+	public int getKeyHashCount(String userId1, String userId2){
 		MapSqlParameterSource params = new MapSqlParameterSource();
-		
-		// get user IDs
-		params.addValue("username", username1);
-		String sql = "SELECT * FROM user where username=:username";
-		int user1Id = (jdbc.queryForObject(sql, params, rowMapperAccount)).getId();
-		params.addValue("username", username2);
-		int user2Id = (jdbc.queryForObject(sql, params, rowMapperAccount)).getId();
 		
 		// get hash count for users
 		params.addValue("user1Id", user1Id);
@@ -68,38 +51,20 @@ private NamedParameterJdbcTemplate jdbc;
 		return (jdbc.queryForObject(sql, params, rowMapper)).getKeyCount();
 	}
 	
-	public int setKeyHashCount(String username1, String username2){
+	public int setKeyHashCount(String userId1, String userId2){
 		MapSqlParameterSource params = new MapSqlParameterSource();
-		
-		// get user IDs
-		params.addValue("username", username1);
-		String sql = "SELECT * FROM user where username=:username";
-		int user1Id = (jdbc.queryForObject(sql, params, rowMapperAccount)).getId();
-		params.addValue("username", username2);
-		int user2Id = (jdbc.queryForObject(sql, params, rowMapperAccount)).getId();
-		
 		
 		// get hash count for users
-		params.addValue("user1Id", user1Id);
-		params.addValue("user2Id", user2Id);
-		sql = "SELECT * FROM key_hash_count where (user1id=:user1Id && user2id=:user2Id) or (user1id=:user2Id && user2id=:user1Id)";
-		int hashCount = (jdbc.queryForObject(sql, params, rowMapper)).getKeyCount();
-		sql = "update key_hash_count set hash_number=" + (hashCount + 1) + SQL_WHERE_CLAUSE;
+		int hashCount = getKeyHashCount(userId1, userId2);
+        
+        // update the hash count by one
+        sql = "update key_hash_count set hash_number=" + (hashCount + 1) + SQL_WHERE_CLAUSE;
 		jdbc.update(sql, params);
-		sql = "SELECT * FROM key_hash_count " + SQL_WHERE_CLAUSE;
-		return jdbc.queryForObject(sql, params, rowMapper).getKeyCount();
+		return hashCount +1;
 	}
 	
-	public void createKeyHashCount(String username1, String username2){
+	public void createKeyHashCount(String userId1, String userId2){
 		MapSqlParameterSource params = new MapSqlParameterSource();
-		
-		// get user IDs
-		params.addValue("username", username1);
-		String sql = "SELECT * FROM user where username=:username";
-		int user1Id = (jdbc.queryForObject(sql, params, rowMapperAccount)).getId();
-		params.addValue("username", username2);
-		int user2Id = (jdbc.queryForObject(sql, params, rowMapperAccount)).getId();
-		
 		
 		// get hash count for users
 		Map<String, String> insertParams = new HashMap<>();

@@ -1,116 +1,70 @@
 package service;
 
-import java.util.Random;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import service.AccountService;
 import dao.SpareKeysDAO;
 import model.SpareKeys;
 
 @Service("spareKeysService")
 public class SpareKeysService {
 	
-	public SpareKeysDAO spareKeysDAO;
-	
-	@Autowired
+	private SpareKeysDAO spareKeysDAO;
+	private AccountService accountService;
+    
+    @Autowired
 	public void setSpareKeysDAO(SpareKeysDAO spareKeysDAO){
 		this.spareKeysDAO = spareKeysDAO;
 	}
 	
+    // not sure if it will work
+    @Autowired
+    public void setAccountService(AccountService accountService){
+        this.accountService = accountService;
+    }
+
+	public void setSpareKey(String username, String[] spareKeysArray){
+        int userid = getUserIdFromUsername(username);
+        SpareKeys[] spareKeys = getArrayAsKeys(userid, spareKeysArray);
+
+        for(SpareKeys spareKey : spareKeys){
+            spareKeysDAO.create(spareKey);
+        }
+	}
+
 	public String getSpareKey(String username){
-		SpareKeys spareKeys = spareKeysDAO.getSpareKeys(username);
-		String[] keys = getKeysAsArray(spareKeys);
-		
-		// select a random key
-		Random random = new Random();
-		int index = random.nextInt(9);
-		
-		// update that key so that it is removed
-		setKeyNumberToKey(spareKeys, index, "0");
-		spareKeysDAO.update(spareKeys);
-		
-		return keys[index];
+		int userid = getUserIdFromUsername(username);
+        List<SpareKeys> spareKeys = spareKeysDAO.getSpareKeys(userid);
+	
+        // update that key so that it is removed
+		spareKeysDAO.delete(spareKeys.get(0));
+
+        // return spare key in string format
+		return spareKeys.get(0).getSpareKey();
 	}
 	
-	public void setSpareKey(String username, String[] spareKeysArray){
-		SpareKeys spareKeys = spareKeysDAO.getSpareKeys(username);
-		String[] keys = getKeysAsArray(spareKeys);
-		
-		// iterate through the sparekeys from the user
-		for(int i = 0; i < spareKeysArray.length; i++){
-			
-			// iterate through array until empty key is found then update the DAO with spareKey from method arg
-			for(int j = 0; j < keys.length; j++){
-				if(keys[j].equals("0")){
-					SpareKeys updatedSpareKeys = setKeyNumberToKey(spareKeys, i, spareKeysArray[j]);
-					spareKeysDAO.update(updatedSpareKeys);
-				}
-			}
-		}
-	}
 	
 	public int checkSpareKey(String username){
-		SpareKeys spareKeys = spareKeysDAO.getSpareKeys(username);
-		String[] keys = getKeysAsArray(spareKeys);
-		int numberOfEmptyKeys = 0;
+		int userid = getUserIdFromUsername(username);
+		List<SpareKeys> spareKeys = spareKeysDAO.getSpareKeys(userid);
 		
-		for(int i =0; i < keys.length; i++){
-			if(keys[i].equals("0")){
-				numberOfEmptyKeys++;
-			}
-		}
-		return numberOfEmptyKeys;
+		return spareKeys.size();
 	}
 	
-	private String[] getKeysAsArray(SpareKeys spareKeys){
-		String[] array = new String[10];
-		array[0] = spareKeys.getKey1();
-		array[1] = spareKeys.getKey2();
-		array[2] = spareKeys.getKey3();
-		array[3] = spareKeys.getKey4();
-		array[4] = spareKeys.getKey5();
-		array[5] = spareKeys.getKey6();
-		array[6] = spareKeys.getKey7();
-		array[7] = spareKeys.getKey8();
-		array[8] = spareKeys.getKey9();
-		array[9] = spareKeys.getKey10();
-		return array;
-	}
-	
-	private SpareKeys setKeyNumberToKey(SpareKeys spareKeys, int index, String key){
-		switch(index){
-			case 0:
-				spareKeys.setKey1(key);
-				break;
-			case 1:
-				spareKeys.setKey2(key);
-				break;
-			case 2:
-				spareKeys.setKey3(key);
-				break;
-			case 3:
-				spareKeys.setKey4(key);
-				break;
-			case 4:
-				spareKeys.setKey5(key);
-				break;
-			case 5:
-				spareKeys.setKey6(key);
-				break;
-			case 6:
-				spareKeys.setKey7(key);
-				break;
-			case 7:
-				spareKeys.setKey8(key);
-				break;
-			case 8:
-				spareKeys.setKey9(key);
-				break;
-			case 9:
-				spareKeys.setKey10(key);
-				break;
-		}		
-		return spareKeys;
-	}
-}
+    private int getUserIdFromUsername(String username){
+        return accountService.getAccountFromUsername(username);
+    }
+
+    private SpareKeys[] getArrayAsKeys(int userid, String[] spareKeysArray){
+        SpareKeys[] spareKeys = new SpareKeys[spareKeysArray.length];
+        for(int i = 0; i < spareKeysArray.length; i++){
+           spareKeys[i] = new SpareKeys();
+           spareKeys[i].setUserId(userid);
+           spareKeys[i].setSpareKey(spareKeysArray[i]);
+        }
+        return spareKeys;
+    }           
+}	

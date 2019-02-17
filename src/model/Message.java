@@ -89,5 +89,4 @@ public class Message {
 	public void setToken(String token) {
 		this.token = token;
 	}
-
 }

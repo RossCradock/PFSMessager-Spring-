@@ -17,16 +17,21 @@ public class AccountService {
 	public void setAccountDAO(AccountDAO accountDAO) {
 		this.accountDAO = accountDAO;
 	}
-
-	public List<Account> getAllAccounts(){
-		return accountDAO.getAllAccounts();		
+	
+    public void createAccount(String username, String token){
+		accountDAO.create(username, token);
 	}
 	
 	public Account getAccount(int id){
 		return accountDAO.getAccount(id);		
 	}
-	
-	public void createAccount(String username, String token){
-		accountDAO.create(username, token);
+
+    public int getAccountFromUsername(String username){
+        return accountDAO.getAccountFromUsername(username).getId();
+    }
+
+	public List<Account> getAllAccounts(){
+		return accountDAO.getAllAccounts();		
 	}
+	
 }

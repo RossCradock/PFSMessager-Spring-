@@ -52,6 +52,12 @@ public class AccountDAO {
 		params.addValue("id", id);
 		return jdbc.queryForObject("SELECT * FROM user where id=:id", params, rowMapper);
 	}
+
+    public Account getAccountFromUsername(String username){
+		MapSqlParameterSource params = new MapSqlParameterSource();
+		params.addValue("username", username);
+		return jdbc.queryForObject("SELECT * FROM user where username=:username", params, rowMapper);
+    }
 	
 	public List<Account> getAllAccounts(){	
 		return jdbc.query("SELECT * FROM user", rowMapper);
