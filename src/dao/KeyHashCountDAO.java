@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Component;
 
-import model.Account;
 import model.KeyHashCount;
 
 @Component("keyHashCountDAO")
@@ -45,9 +44,9 @@ private NamedParameterJdbcTemplate jdbc;
 		MapSqlParameterSource params = new MapSqlParameterSource();
 		
 		// get hash count for users
-		params.addValue("user1Id", user1Id);
-		params.addValue("user2Id", user2Id);
-		sql = "SELECT * FROM key_hash_count" + SQL_WHERE_CLAUSE;
+		params.addValue("user1Id", userId1);
+		params.addValue("user2Id", userId2);
+		String sql = "SELECT * FROM key_hash_count" + SQL_WHERE_CLAUSE;
 		return (jdbc.queryForObject(sql, params, rowMapper)).getKeyCount();
 	}
 	
@@ -58,19 +57,18 @@ private NamedParameterJdbcTemplate jdbc;
 		int hashCount = getKeyHashCount(userId1, userId2);
         
         // update the hash count by one
-        sql = "update key_hash_count set hash_number=" + (hashCount + 1) + SQL_WHERE_CLAUSE;
+        String sql = "update key_hash_count set hash_number=" + (hashCount + 1) + SQL_WHERE_CLAUSE;
 		jdbc.update(sql, params);
 		return hashCount +1;
 	}
 	
 	public void createKeyHashCount(String userId1, String userId2){
-		MapSqlParameterSource params = new MapSqlParameterSource();
+		Map<String, String> insertParams = new HashMap<>();
 		
 		// get hash count for users
-		Map<String, String> insertParams = new HashMap<>();
-		insertParams.put("user1Id", String.valueOf(user1Id));
-		insertParams.put("user2Id", String.valueOf(user2Id));
-		sql = "insert into key_hash_count(user1id, user2id, hash_number) values(:user1Id, :user2Id, 0)";
+		insertParams.put("user1Id", String.valueOf(userId1));
+		insertParams.put("user2Id", String.valueOf(userId2));
+		String sql = "insert into key_hash_count(user1id, user2id, hash_number) values(:user1Id, :user2Id, 0)";
 		jdbc.update(sql, insertParams);
 	}
 }

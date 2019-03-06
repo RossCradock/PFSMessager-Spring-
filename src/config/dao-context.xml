@@ -15,10 +15,10 @@
 		>
 
 		<property name="driverClassName" value="com.mysql.jdbc.Driver"></property>
-		<property name="url" value="jdbc:mysql://localhost:3306/messaging">
+		<property name="url" value="jdbc:mysql://pfsdb.cpyz24mnfx74.us-east-2.rds.amazonaws.com:3306/PFS">
 		</property>
-		<property name="username" value="root"></property>
-		<property name="password" value="root"></property>
+		<property name="username" value="rosscradock"></property>
+		<property name="password" value="MtiIr8huWoGCMLJFevIbgwxbaWKWQjEsGa9bDih3"></property>
 	</bean>
 	
 </beans>
