@@ -3,3 +3,5 @@
 *.class
 dao-context.xml
 *.jar
+/target/
+!/target/*.war
