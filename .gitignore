@@ -1,2 +1,5 @@
 *.swp
 *.swo
+*.class
+dao-context.xml
+*.jar
